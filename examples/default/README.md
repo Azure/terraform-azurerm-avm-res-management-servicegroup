@@ -9,13 +9,13 @@ terraform {
   required_version = "~> 1.5"
 
   required_providers {
+    azapi = {
+      source  = "Azure/azapi"
+      version = "~>2.0"
+    }
     azurerm = {
       source  = "hashicorp/azurerm"
       version = "~> 4.21"
-    }
-    modtm = {
-      source  = "azure/modtm"
-      version = "~> 0.3"
     }
     random = {
       source  = "hashicorp/random"
@@ -24,36 +24,32 @@ terraform {
   }
 }
 
+provider "azapi" {
+  # Configuration options
+}
+
+
 provider "azurerm" {
   features {}
+  # subscription_id = "your-subscription-id" # Replace with your Azure subscription ID
 }
-
-
-## Section to provide a random Azure region for the resource group
-# This allows us to randomize the region for the resource group.
-module "regions" {
-  source  = "Azure/avm-utl-regions/azurerm"
-  version = "~> 0.1"
-}
-
-# This allows us to randomize the region for the resource group.
-resource "random_integer" "region_index" {
-  max = length(module.regions.regions) - 1
-  min = 0
-}
-## End of section to provide a random Azure region for the resource group
 
 # This ensures we have unique CAF compliant names for our resources.
-module "naming" {
+# Service group is not supported yet
+/* module "naming" {
   source  = "Azure/naming/azurerm"
   version = "~> 0.3"
+} */
+
+# Creating a random name
+resource "random_string" "service_group" {
+  length  = 12
+  lower   = true
+  special = false
+  upper   = false
 }
 
-# This is required for resource modules
-resource "azurerm_resource_group" "this" {
-  location = module.regions.regions[random_integer.region_index.result].name
-  name     = module.naming.resource_group.name_unique
-}
+data "azurerm_client_config" "current" {}
 
 # This is the module call
 # Do not specify location here due to the randomization above.
@@ -62,12 +58,8 @@ resource "azurerm_resource_group" "this" {
 module "test" {
   source = "../../"
 
-  # source             = "Azure/avm-<res/ptn>-<name>/azurerm"
-  # ...
-  location            = azurerm_resource_group.this.location
-  name                = "TODO" # TODO update with module.naming.<RESOURCE_TYPE>.name_unique
-  resource_group_name = azurerm_resource_group.this.name
-  enable_telemetry    = var.enable_telemetry # see variables.tf
+  service_group_name = random_string.service_group.result
+  tenant_id          = data.azurerm_client_config.current.tenant_id
 }
 ```
 
@@ -78,9 +70,9 @@ The following requirements are needed by this module:
 
 - <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (~> 1.5)
 
-- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 4.21)
+- <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) (~>2.0)
 
-- <a name="requirement_modtm"></a> [modtm](#requirement\_modtm) (~> 0.3)
+- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 4.21)
 
 - <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.5)
 
@@ -88,8 +80,8 @@ The following requirements are needed by this module:
 
 The following resources are used by this module:
 
-- [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
-- [random_integer.region_index](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) (resource)
+- [random_string.service_group](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) (resource)
+- [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -98,17 +90,7 @@ No required inputs.
 
 ## Optional Inputs
 
-The following input variables are optional (have default values):
-
-### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
-
-Description: This variable controls whether or not telemetry is enabled for the module.  
-For more information see <https://aka.ms/avm/telemetryinfo>.  
-If it is set to false, then no telemetry will be collected.
-
-Type: `bool`
-
-Default: `true`
+No optional inputs.
 
 ## Outputs
 
@@ -117,18 +99,6 @@ No outputs.
 ## Modules
 
 The following Modules are called:
-
-### <a name="module_naming"></a> [naming](#module\_naming)
-
-Source: Azure/naming/azurerm
-
-Version: ~> 0.3
-
-### <a name="module_regions"></a> [regions](#module\_regions)
-
-Source: Azure/avm-utl-regions/azurerm
-
-Version: ~> 0.1
 
 ### <a name="module_test"></a> [test](#module\_test)
 
