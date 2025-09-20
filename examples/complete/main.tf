@@ -42,15 +42,25 @@ resource "random_integer" "region_index" {
 ## End of section to provide a random Azure region for the resource group
 
 # This ensures we have unique CAF compliant names for our resources.
-module "naming" {
+module "naming_one" {
+  source  = "Azure/naming/azurerm"
+  version = "0.4.2"
+}
+
+module "naming_two" {
   source  = "Azure/naming/azurerm"
   version = "0.4.2"
 }
 
 # This is required for resource modules
-resource "azurerm_resource_group" "this" {
+resource "azurerm_resource_group" "one" {
   location = module.regions.regions[random_integer.region_index.result].name
-  name     = module.naming.resource_group.name_unique
+  name     = module.naming_one.resource_group.name_unique
+}
+
+resource "azurerm_resource_group" "two" {
+  location = module.regions.regions[random_integer.region_index.result].name
+  name     = module.naming_two.resource_group.name_unique
 }
 
 # Creating a random name
@@ -78,8 +88,11 @@ module "test" {
     }
   }
   service_group_members = {
-    "test-resource-group" = {
-      targetId = azurerm_resource_group.this.id
+    "test-resource-group-one" = {
+      targetId = azurerm_resource_group.one.id
+    }
+    "test-resource-group-two" = {
+      targetId = azurerm_resource_group.two.id
     }
   }
 }

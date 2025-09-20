@@ -16,7 +16,19 @@ resource "azapi_resource" "service_group" {
   update_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
 }
 
-resource "azapi_resource" "service_group_member" {
+module "service_group_members" {
+  source   = "./modules/members"
+  for_each = var.service_group_members == {} ? {} : var.service_group_members
+
+  name               = each.key
+  service_group_name = azapi_resource.service_group.name
+  target_id          = each.value.targetId
+  tenant_id          = var.tenant_id
+
+  depends_on = [azapi_resource.service_group]
+}
+
+/* resource "azapi_resource" "service_group_member" {
   for_each = var.service_group_members == {} ? {} : var.service_group_members
 
   name      = each.key
@@ -36,7 +48,7 @@ resource "azapi_resource" "service_group_member" {
 
   depends_on = [azapi_resource.service_group]
 }
-
+ */
 
 resource "azurerm_role_assignment" "this" {
   for_each = var.role_assignments

@@ -15,5 +15,5 @@ output "resource_id" {
 
 output "service_group_members" {
   description = "The members of the Service group."
-  value       = azapi_resource.service_group_member[*]
+  value       = { for k, v in module.service_group_members : k => v.service_group_member }
 }

@@ -49,15 +49,25 @@ resource "random_integer" "region_index" {
 ## End of section to provide a random Azure region for the resource group
 
 # This ensures we have unique CAF compliant names for our resources.
-module "naming" {
+module "naming_one" {
+  source  = "Azure/naming/azurerm"
+  version = "0.4.2"
+}
+
+module "naming_two" {
   source  = "Azure/naming/azurerm"
   version = "0.4.2"
 }
 
 # This is required for resource modules
-resource "azurerm_resource_group" "this" {
+resource "azurerm_resource_group" "one" {
   location = module.regions.regions[random_integer.region_index.result].name
-  name     = module.naming.resource_group.name_unique
+  name     = module.naming_one.resource_group.name_unique
+}
+
+resource "azurerm_resource_group" "two" {
+  location = module.regions.regions[random_integer.region_index.result].name
+  name     = module.naming_two.resource_group.name_unique
 }
 
 # Creating a random name
@@ -85,8 +95,11 @@ module "test" {
     }
   }
   service_group_members = {
-    "test-resource-group" = {
-      targetId = azurerm_resource_group.this.id
+    "test-resource-group-one" = {
+      targetId = azurerm_resource_group.one.id
+    }
+    "test-resource-group-two" = {
+      targetId = azurerm_resource_group.two.id
     }
   }
 }
@@ -109,7 +122,8 @@ The following requirements are needed by this module:
 
 The following resources are used by this module:
 
-- [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
+- [azurerm_resource_group.one](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
+- [azurerm_resource_group.two](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
 - [random_integer.region_index](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) (resource)
 - [random_string.service_group](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) (resource)
 - [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) (data source)
@@ -131,7 +145,13 @@ No outputs.
 
 The following Modules are called:
 
-### <a name="module_naming"></a> [naming](#module\_naming)
+### <a name="module_naming_one"></a> [naming\_one](#module\_naming\_one)
+
+Source: Azure/naming/azurerm
+
+Version: 0.4.2
+
+### <a name="module_naming_two"></a> [naming\_two](#module\_naming\_two)
 
 Source: Azure/naming/azurerm
 

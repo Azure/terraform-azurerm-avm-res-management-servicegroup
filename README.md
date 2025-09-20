@@ -24,7 +24,6 @@ The following requirements are needed by this module:
 The following resources are used by this module:
 
 - [azapi_resource.service_group](https://registry.terraform.io/providers/Azure/azapi/latest/docs/resources/resource) (resource)
-- [azapi_resource.service_group_member](https://registry.terraform.io/providers/Azure/azapi/latest/docs/resources/resource) (resource)
 - [azurerm_role_assignment.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) (resource)
 - [modtm_telemetry.telemetry](https://registry.terraform.io/providers/azure/modtm/latest/docs/resources/telemetry) (resource)
 - [random_uuid.telemetry](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) (resource)
@@ -146,7 +145,13 @@ Description: The members of the Service group.
 
 ## Modules
 
-No modules.
+The following Modules are called:
+
+### <a name="module_service_group_members"></a> [service\_group\_members](#module\_service\_group\_members)
+
+Source: ./modules/members
+
+Version:
 
 <!-- markdownlint-disable-next-line MD041 -->
 ## Data Collection
