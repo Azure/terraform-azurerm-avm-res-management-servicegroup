@@ -28,27 +28,6 @@ module "service_group_members" {
   depends_on = [azapi_resource.service_group]
 }
 
-/* resource "azapi_resource" "service_group_member" {
-  for_each = var.service_group_members == {} ? {} : var.service_group_members
-
-  name      = each.key
-  parent_id = each.value.targetId
-  type      = "${local.sg_member_type}@2023-09-01-preview"
-  body = {
-    properties = {
-      targetId     = "/providers/${local.sg_type}/${azapi_resource.service_group.name}"
-      targetTenant = var.tenant_id
-    }
-  }
-  create_headers            = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
-  delete_headers            = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
-  read_headers              = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
-  schema_validation_enabled = false
-  update_headers            = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
-
-  depends_on = [azapi_resource.service_group]
-}
- */
 
 resource "azurerm_role_assignment" "this" {
   for_each = var.role_assignments
