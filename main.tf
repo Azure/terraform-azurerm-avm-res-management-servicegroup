@@ -10,10 +10,11 @@ resource "azapi_resource" "service_group" {
       }
     }
   }
-  create_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
-  delete_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
-  read_headers   = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
-  update_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  create_headers         = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  delete_headers         = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  read_headers           = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  response_export_values = ["name", "id"]
+  update_headers         = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
 }
 
 module "service_group_members" {
@@ -21,8 +22,8 @@ module "service_group_members" {
   for_each = var.service_group_members == {} ? {} : var.service_group_members
 
   name               = each.key
-  service_group_name = azapi_resource.service_group.name
   parent_id          = each.value.targetId
+  service_group_name = azapi_resource.service_group.name
   tenant_id          = var.tenant_id
 
   depends_on = [azapi_resource.service_group]

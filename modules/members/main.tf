@@ -8,5 +8,6 @@ resource "azapi_resource" "service_group_member" {
       targetTenant = var.tenant_id
     }
   }
+  response_export_values    = ["id", "properties.targetId"]
   schema_validation_enabled = false
 }

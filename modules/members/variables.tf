@@ -3,14 +3,14 @@ variable "name" {
   description = "The name of the service group member."
 }
 
-variable "service_group_name" {
-  type        = string
-  description = "The name of the service group to which the member will be added."
-}
-
 variable "parent_id" {
   type        = string
   description = "The target ID of the resource to be added as a member to the service group."
+}
+
+variable "service_group_name" {
+  type        = string
+  description = "The name of the service group to which the member will be added."
 }
 
 variable "tenant_id" {

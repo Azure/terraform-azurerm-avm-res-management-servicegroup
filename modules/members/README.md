@@ -30,15 +30,15 @@ Description: The name of the service group member.
 
 Type: `string`
 
-### <a name="input_service_group_name"></a> [service\_group\_name](#input\_service\_group\_name)
+### <a name="input_parent_id"></a> [parent\_id](#input\_parent\_id)
 
-Description: The name of the service group to which the member will be added.
+Description: The target ID of the resource to be added as a member to the service group.
 
 Type: `string`
 
-### <a name="input_target_id"></a> [target\_id](#input\_target\_id)
+### <a name="input_service_group_name"></a> [service\_group\_name](#input\_service\_group\_name)
 
-Description: The target ID of the resource to be added as a member to the service group.
+Description: The name of the service group to which the member will be added.
 
 Type: `string`
 
