@@ -8,7 +8,7 @@ variable "service_group_name" {
   description = "The name of the service group to which the member will be added."
 }
 
-variable "target_id" {
+variable "parent_id" {
   type        = string
   description = "The target ID of the resource to be added as a member to the service group."
 }

@@ -1,6 +1,6 @@
 resource "azapi_resource" "service_group_member" {
   name      = var.name
-  parent_id = var.target_id
+  parent_id = var.parent_id
   type      = "${local.sg_member_type}@2023-09-01-preview"
   body = {
     properties = {

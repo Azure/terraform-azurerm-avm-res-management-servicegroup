@@ -22,7 +22,7 @@ module "service_group_members" {
 
   name               = each.key
   service_group_name = azapi_resource.service_group.name
-  target_id          = each.value.targetId
+  parent_id          = each.value.targetId
   tenant_id          = var.tenant_id
 
   depends_on = [azapi_resource.service_group]
