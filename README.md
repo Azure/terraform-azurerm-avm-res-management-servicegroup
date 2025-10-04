@@ -127,6 +127,10 @@ Default: `{}`
 
 The following outputs are exported:
 
+### <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id)
+
+Description: The resource id of the Service group.
+
 ### <a name="output_service_group_members"></a> [service\_group\_members](#output\_service\_group\_members)
 
 Description: The members of the Service group.
@@ -134,10 +138,6 @@ Description: The members of the Service group.
 ### <a name="output_service_group_name"></a> [service\_group\_name](#output\_service\_group\_name)
 
 Description: The name of the Service group.
-
-### <a name="output_service_group_resource_id"></a> [service\_group\_resource\_id](#output\_service\_group\_resource\_id)
-
-Description: The resource id of the Service group.
 
 ## Modules
 
