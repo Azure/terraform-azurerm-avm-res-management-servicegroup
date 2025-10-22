@@ -107,7 +107,7 @@ Default: `{}`
 Description: A map of service group members to add to the service group. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
 - `name` - The name of the service group member.
 - `target_id` - The target ID of the resource to be added as a member
-- `target_tenant_id` - The tenant ID where the service group is located. If not provided, the current tenant ID will be used.
+- `target_tenant_id` - The tenant ID where the service group is located. If not provided, the current tenant ID will be used."
 
 Type:
 

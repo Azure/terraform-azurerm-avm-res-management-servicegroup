@@ -17,11 +17,6 @@ terraform {
   }
 }
 
-variable "enable_telemetry" {
-  type    = bool
-  default = true
-  nullable = false
-}
 
 provider "azurerm" {
   features {}
@@ -75,6 +70,8 @@ resource "random_string" "service_group" {
 module "test" {
   source = "../../"
 
+  display_name     = random_string.service_group.result
+  name             = random_string.service_group.result
   enable_telemetry = var.enable_telemetry
   role_assignments = {
     "test-role" = {
@@ -84,12 +81,12 @@ module "test" {
   }
   service_group_members = {
     "test-resource-group-one" = {
+      name      = "test-resource-group-one"
       target_id = azurerm_resource_group.one.id
     }
     "test-resource-group-two" = {
+      name      = "test-resource-group-two"
       target_id = azurerm_resource_group.two.id
     }
   }
-  name = random_string.service_group.result
-  display_name = random_string.service_group.result
 }

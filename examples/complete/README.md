@@ -24,14 +24,9 @@ terraform {
   }
 }
 
-provider "azapi" {
-  # Configuration options
-}
-
 
 provider "azurerm" {
   features {}
-  # subscription_id = "your-subscription-id" # Replace with your Azure subscription ID
 }
 
 ## Section to provide a random Azure region for the resource group
@@ -78,14 +73,13 @@ resource "random_string" "service_group" {
   upper   = false
 }
 
-data "azurerm_client_config" "current" {}
-
 # This is the module call
 module "test" {
   source = "../../"
 
-  enable_telemetry        = true
-  parent_service_group_id = data.azurerm_client_config.current.tenant_id
+  display_name     = random_string.service_group.result
+  name             = random_string.service_group.result
+  enable_telemetry = var.enable_telemetry
   role_assignments = {
     "test-role" = {
       principal_id               = data.azurerm_client_config.current.object_id
@@ -94,14 +88,14 @@ module "test" {
   }
   service_group_members = {
     "test-resource-group-one" = {
-      targetId = azurerm_resource_group.one.id
+      name      = "test-resource-group-one"
+      target_id = azurerm_resource_group.one.id
     }
     "test-resource-group-two" = {
-      targetId = azurerm_resource_group.two.id
+      name      = "test-resource-group-two"
+      target_id = azurerm_resource_group.two.id
     }
   }
-  service_group_name = random_string.service_group.result
-  tenant_id          = data.azurerm_client_config.current.tenant_id
 }
 ```
 
@@ -126,7 +120,6 @@ The following resources are used by this module:
 - [azurerm_resource_group.two](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
 - [random_integer.region_index](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) (resource)
 - [random_string.service_group](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) (resource)
-- [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -135,7 +128,15 @@ No required inputs.
 
 ## Optional Inputs
 
-No optional inputs.
+The following input variables are optional (have default values):
+
+### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
+
+Description: n/a
+
+Type: `bool`
+
+Default: `true`
 
 ## Outputs
 
