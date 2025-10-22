@@ -36,12 +36,6 @@ The following resources are used by this module:
 
 The following input variables are required:
 
-### <a name="input_display_name"></a> [display\_name](#input\_display\_name)
-
-Description: The name of the service group.
-
-Type: `string`
-
 ### <a name="input_name"></a> [name](#input\_name)
 
 Description: The name (ID) of the Service Group. This will form part of the resource ID.
@@ -51,6 +45,14 @@ Type: `string`
 ## Optional Inputs
 
 The following input variables are optional (have default values):
+
+### <a name="input_display_name"></a> [display\_name](#input\_display\_name)
+
+Description: The name of the service group, if not specified the `name` will be used.
+
+Type: `string`
+
+Default: `null`
 
 ### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
 
@@ -108,6 +110,11 @@ Description: A map of service group members to add to the service group. The map
 - `name` - The name of the service group member.
 - `target_id` - The target ID of the resource to be added as a member
 - `target_tenant_id` - The tenant ID where the service group is located. If not provided, the current tenant ID will be used."
+
+In order to use cross tenant resources, you must authenticate using a principal that has access to both tenants.  
+The <https://registry.terraform.io/providers/Azure/azapi/latest/docs#auxiliary_tenant_ids-1> property can be used to add additional tenants to the provider.
+
+The process to enable cross tenant service principals is outside the scope of this module.
 
 Type:
 

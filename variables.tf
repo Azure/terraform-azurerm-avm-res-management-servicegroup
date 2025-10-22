@@ -1,13 +1,13 @@
-variable "display_name" {
-  type        = string
-  description = "The name of the service group."
-  nullable    = false
-}
-
 variable "name" {
   type        = string
   description = "The name (ID) of the Service Group. This will form part of the resource ID."
   nullable    = false
+}
+
+variable "display_name" {
+  type        = string
+  default     = null
+  description = "The name of the service group, if not specified the `name` will be used."
 }
 
 variable "enable_telemetry" {
@@ -68,6 +68,11 @@ variable "service_group_members" {
   - `name` - The name of the service group member.
   - `target_id` - The target ID of the resource to be added as a member
   - `target_tenant_id` - The tenant ID where the service group is located. If not provided, the current tenant ID will be used."
+
+  In order to use cross tenant resources, you must authenticate using a principal that has access to both tenants.
+  The <https://registry.terraform.io/providers/Azure/azapi/latest/docs#auxiliary_tenant_ids-1> property can be used to add additional tenants to the provider.
+
+  The process to enable cross tenant service principals is outside the scope of this module.
   DESCRIPTION
   nullable    = false
 }

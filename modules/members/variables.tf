@@ -16,5 +16,10 @@ variable "service_group_name" {
 variable "tenant_id" {
   type        = string
   default     = null
-  description = "The tenant ID where the service group is located."
+  description = <<-DESCRIPTION
+  The tenant ID where the service group is located. If not provided, the current tenant ID will be used.
+  In order to use cross-tenant resources, you must authenticate using a principal that has access to both tenants.
+  The AzAPI provider support this via the `auxiliary_tenant_ids` property.
+  The process to enable cross-tenant service principals is outside the scope of this module.
+  DESCRIPTION
 }

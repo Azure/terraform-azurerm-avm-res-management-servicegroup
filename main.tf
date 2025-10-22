@@ -6,7 +6,7 @@ resource "azapi_resource" "service_group" {
   type      = "${local.sg_type}@2024-02-01-preview"
   body = {
     properties = {
-      displayName = var.display_name
+      displayName = coalesce(var.display_name, var.name)
       parent = {
         resourceId = local.sg_id
       }

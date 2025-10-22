@@ -9,37 +9,12 @@ terraform {
   required_version = "~> 1.5"
 
   required_providers {
-    azapi = {
-      source  = "Azure/azapi"
-      version = "~>2.0"
-    }
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~> 4.21"
-    }
     random = {
       source  = "hashicorp/random"
       version = "~> 3.5"
     }
   }
 }
-
-provider "azapi" {
-  # Configuration options
-}
-
-
-provider "azurerm" {
-  features {}
-  # subscription_id = "your-subscription-id" # Replace with your Azure subscription ID
-}
-
-# This ensures we have unique CAF compliant names for our resources.
-# Service group is not supported yet
-/* module "naming" {
-  source  = "Azure/naming/azurerm"
-  version = "~> 0.3"
-} */
 
 # Creating a random name
 resource "random_string" "service_group" {
@@ -49,8 +24,6 @@ resource "random_string" "service_group" {
   upper   = false
 }
 
-data "azurerm_client_config" "current" {}
-
 # This is the module call
 # Do not specify location here due to the randomization above.
 # Leaving location as `null` will cause the module to use the resource group location
@@ -58,8 +31,8 @@ data "azurerm_client_config" "current" {}
 module "test" {
   source = "../../"
 
-  service_group_name = random_string.service_group.result
-  tenant_id          = data.azurerm_client_config.current.tenant_id
+  name         = random_string.service_group.result
+  display_name = random_string.service_group.result
 }
 ```
 
@@ -70,10 +43,6 @@ The following requirements are needed by this module:
 
 - <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (~> 1.5)
 
-- <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) (~>2.0)
-
-- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 4.21)
-
 - <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.5)
 
 ## Resources
@@ -81,7 +50,6 @@ The following requirements are needed by this module:
 The following resources are used by this module:
 
 - [random_string.service_group](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) (resource)
-- [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs

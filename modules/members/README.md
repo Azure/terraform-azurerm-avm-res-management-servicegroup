@@ -48,7 +48,10 @@ The following input variables are optional (have default values):
 
 ### <a name="input_tenant_id"></a> [tenant\_id](#input\_tenant\_id)
 
-Description: The tenant ID where the service group is located.
+Description: The tenant ID where the service group is located. If not provided, the current tenant ID will be used.  
+In order to use cross-tenant resources, you must authenticate using a principal that has access to both tenants.  
+The AzAPI provider support this via the `auxiliary_tenant_ids` property.  
+The process to enable cross-tenant service principals is outside the scope of this module.
 
 Type: `string`
 
