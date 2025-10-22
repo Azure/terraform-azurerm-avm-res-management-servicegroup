@@ -15,5 +15,6 @@ variable "service_group_name" {
 
 variable "tenant_id" {
   type        = string
+  default     = null
   description = "The tenant ID where the service group is located."
 }

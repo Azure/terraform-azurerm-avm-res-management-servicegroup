@@ -27,6 +27,7 @@ The following resources are used by this module:
 - [azurerm_role_assignment.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) (resource)
 - [modtm_telemetry.telemetry](https://registry.terraform.io/providers/azure/modtm/latest/docs/resources/telemetry) (resource)
 - [random_uuid.telemetry](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) (resource)
+- [azapi_client_config.current](https://registry.terraform.io/providers/Azure/azapi/latest/docs/data-sources/client_config) (data source)
 - [azapi_client_config.telemetry](https://registry.terraform.io/providers/Azure/azapi/latest/docs/data-sources/client_config) (data source)
 - [modtm_module_source.telemetry](https://registry.terraform.io/providers/azure/modtm/latest/docs/data-sources/module_source) (data source)
 
@@ -35,15 +36,15 @@ The following resources are used by this module:
 
 The following input variables are required:
 
-### <a name="input_service_group_name"></a> [service\_group\_name](#input\_service\_group\_name)
+### <a name="input_display_name"></a> [display\_name](#input\_display\_name)
 
 Description: The name of the service group.
 
 Type: `string`
 
-### <a name="input_tenant_id"></a> [tenant\_id](#input\_tenant\_id)
+### <a name="input_name"></a> [name](#input\_name)
 
-Description: The tenant ID where the service group is located.
+Description: The name (ID) of the Service Group. This will form part of the resource ID.
 
 Type: `string`
 
@@ -63,11 +64,11 @@ Default: `true`
 
 ### <a name="input_parent_service_group_id"></a> [parent\_service\_group\_id](#input\_parent\_service\_group\_id)
 
-Description: The parent service group ID where the service group is located. If not provided, the service group will be created at the root level. This is only needed if the parent is not the tenant ID.
+Description: The ID (name, not resource ID) of the parent Service Group. If not provided, the tenant level service group will be used as the parent.
 
 Type: `string`
 
-Default: `""`
+Default: `null`
 
 ### <a name="input_role_assignments"></a> [role\_assignments](#input\_role\_assignments)
 
@@ -101,23 +102,20 @@ map(object({
 
 Default: `{}`
 
-### <a name="input_service_group_id"></a> [service\_group\_id](#input\_service\_group\_id)
-
-Description: The ID of the service group.
-
-Type: `string`
-
-Default: `""`
-
 ### <a name="input_service_group_members"></a> [service\_group\_members](#input\_service\_group\_members)
 
-Description: A map of service group members to be added to the service group. The key is the name of the member, and the value is a map containing the targetId and targetTenant.
+Description: A map of service group members to add to the service group. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
+- `name` - The name of the service group member.
+- `target_id` - The target ID of the resource to be added as a member
+- `target_tenant_id` - The tenant ID where the service group is located. If not provided, the current tenant ID will be used.
 
 Type:
 
 ```hcl
 map(object({
-    targetId = string
+    name             = string
+    target_id        = string
+    target_tenant_id = optional(string)
   }))
 ```
 

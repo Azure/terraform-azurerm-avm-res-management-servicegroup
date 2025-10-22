@@ -1,34 +1,32 @@
+data "azapi_client_config" "current" {}
+
 resource "azapi_resource" "service_group" {
-  name      = var.service_group_id != "" ? var.service_group_id : var.service_group_name
+  name      = var.name
   parent_id = "/"
   type      = "${local.sg_type}@2024-02-01-preview"
   body = {
     properties = {
-      displayName = var.service_group_name
+      displayName = var.display_name
       parent = {
         resourceId = local.sg_id
       }
     }
   }
-  create_headers         = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
-  delete_headers         = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
-  read_headers           = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
-  response_export_values = ["name", "id"]
-  update_headers         = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  create_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  delete_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  read_headers   = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  update_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
 }
 
 module "service_group_members" {
   source   = "./modules/members"
-  for_each = var.service_group_members == {} ? {} : var.service_group_members
+  for_each = var.service_group_members
 
-  name               = each.key
-  parent_id          = each.value.targetId
+  name               = each.value.name
+  parent_id          = each.value.target_id
   service_group_name = azapi_resource.service_group.name
-  tenant_id          = var.tenant_id
-
-  depends_on = [azapi_resource.service_group]
+  tenant_id          = each.value.target_tenant_id
 }
-
 
 resource "azurerm_role_assignment" "this" {
   for_each = var.role_assignments

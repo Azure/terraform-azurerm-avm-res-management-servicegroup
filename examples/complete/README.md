@@ -84,8 +84,6 @@ data "azurerm_client_config" "current" {}
 module "test" {
   source = "../../"
 
-  service_group_name      = random_string.service_group.result
-  tenant_id               = data.azurerm_client_config.current.tenant_id
   enable_telemetry        = true
   parent_service_group_id = data.azurerm_client_config.current.tenant_id
   role_assignments = {
@@ -102,6 +100,8 @@ module "test" {
       targetId = azurerm_resource_group.two.id
     }
   }
+  service_group_name = random_string.service_group.result
+  tenant_id          = data.azurerm_client_config.current.tenant_id
 }
 ```
 

@@ -1,16 +1,15 @@
-variable service_group_name {
+variable "display_name" {
   type        = string
   description = "The name of the service group."
+  nullable    = false
 }
 
-variable "tenant_id" {
+variable "name" {
   type        = string
-  description = "The tenant ID where the service group is located."
+  description = "The name (ID) of the Service Group. This will form part of the resource ID."
+  nullable    = false
 }
 
-# required AVM interfaces
-# remove only if not supported by the resource
-# tflint-ignore: terraform_unused_declarations
 variable "enable_telemetry" {
   type        = bool
   default     = true
@@ -24,8 +23,8 @@ DESCRIPTION
 
 variable "parent_service_group_id" {
   type        = string
-  default     = ""
-  description = "The parent service group ID where the service group is located. If not provided, the service group will be created at the root level. This is only needed if the parent is not the tenant ID."
+  default     = null
+  description = "The ID (name, not resource ID) of the parent Service Group. If not provided, the tenant level service group will be used as the parent."
 }
 
 variable "role_assignments" {
@@ -40,33 +39,35 @@ variable "role_assignments" {
     principal_type                         = optional(string, null)
   }))
   default     = {}
-  description = <<DESCRIPTION
-A map of role assignments to create on this resource. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
+  description = <<-DESCRIPTION
+  A map of role assignments to create on this resource. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
 
-- `role_definition_id_or_name` - The ID or name of the role definition to assign to the principal.
-- `principal_id` - The ID of the principal to assign the role to.
-- `description` - The description of the role assignment.
-- `skip_service_principal_aad_check` - If set to true, skips the Azure Active Directory check for the service principal in the tenant. Defaults to false.
-- `condition` - The condition which will be used to scope the role assignment.
-- `condition_version` - The version of the condition syntax. Valid values are '2.0'.
-- `delegated_managed_identity_resource_id` - The delegated Azure Resource Id which contains a Managed Identity. Changing this forces a new resource to be created.
-- `principal_type` - The type of the principal_id. Possible values are `User`, `Group` and `ServicePrincipal`. Changing this forces a new resource to be created. It is necessary to explicitly set this attribute when creating role assignments if the principal creating the assignment is constrained by ABAC rules that filters on the PrincipalType attribute.
+  - `role_definition_id_or_name` - The ID or name of the role definition to assign to the principal.
+  - `principal_id` - The ID of the principal to assign the role to.
+  - `description` - The description of the role assignment.
+  - `skip_service_principal_aad_check` - If set to true, skips the Azure Active Directory check for the service principal in the tenant. Defaults to false.
+  - `condition` - The condition which will be used to scope the role assignment.
+  - `condition_version` - The version of the condition syntax. Valid values are '2.0'.
+  - `delegated_managed_identity_resource_id` - The delegated Azure Resource Id which contains a Managed Identity. Changing this forces a new resource to be created.
+  - `principal_type` - The type of the principal_id. Possible values are `User`, `Group` and `ServicePrincipal`. Changing this forces a new resource to be created. It is necessary to explicitly set this attribute when creating role assignments if the principal creating the assignment is constrained by ABAC rules that filters on the PrincipalType attribute.
 
-> Note: only set `skip_service_principal_aad_check` to true if you are assigning a role to a service principal.
-DESCRIPTION
+  > Note: only set `skip_service_principal_aad_check` to true if you are assigning a role to a service principal.
+  DESCRIPTION
   nullable    = false
-}
-
-variable "service_group_id" {
-  type        = string
-  default     = ""
-  description = "The ID of the service group."
 }
 
 variable "service_group_members" {
   type = map(object({
-    targetId = string
+    name             = string
+    target_id        = string
+    target_tenant_id = optional(string)
   }))
   default     = {}
-  description = "A map of service group members to be added to the service group. The key is the name of the member, and the value is a map containing the targetId and targetTenant."
+  description = <<-DESCRIPTION
+  A map of service group members to add to the service group. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
+  - `name` - The name of the service group member.
+  - `target_id` - The target ID of the resource to be added as a member
+  - `target_tenant_id` - The tenant ID where the service group is located. If not provided, the current tenant ID will be used.
+  DESCRIPTION
+  nullable    = false
 }

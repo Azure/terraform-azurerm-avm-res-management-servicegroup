@@ -42,15 +42,17 @@ Description: The name of the service group to which the member will be added.
 
 Type: `string`
 
+## Optional Inputs
+
+The following input variables are optional (have default values):
+
 ### <a name="input_tenant_id"></a> [tenant\_id](#input\_tenant\_id)
 
 Description: The tenant ID where the service group is located.
 
 Type: `string`
 
-## Optional Inputs
-
-No optional inputs.
+Default: `null`
 
 ## Outputs
 
