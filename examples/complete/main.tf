@@ -1,0 +1,90 @@
+terraform {
+  required_version = "~> 1.5"
+
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.21"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.5"
+    }
+  }
+}
+
+
+provider "azurerm" {
+  features {}
+}
+
+data "azurerm_client_config" "current" {}
+
+## Section to provide a random Azure region for the resource group
+# This allows us to randomize the region for the resource group.
+module "regions" {
+  source  = "Azure/avm-utl-regions/azurerm"
+  version = "0.9.0"
+}
+
+# This allows us to randomize the region for the resource group.
+resource "random_integer" "region_index" {
+  max = length(module.regions.regions) - 1
+  min = 0
+}
+## End of section to provide a random Azure region for the resource group
+
+# This ensures we have unique CAF compliant names for our resources.
+module "naming_one" {
+  source  = "Azure/naming/azurerm"
+  version = "0.4.2"
+}
+
+module "naming_two" {
+  source  = "Azure/naming/azurerm"
+  version = "0.4.2"
+}
+
+# This is required for resource modules
+resource "azurerm_resource_group" "one" {
+  location = module.regions.regions[random_integer.region_index.result].name
+  name     = module.naming_one.resource_group.name_unique
+}
+
+resource "azurerm_resource_group" "two" {
+  location = module.regions.regions[random_integer.region_index.result].name
+  name     = module.naming_two.resource_group.name_unique
+}
+
+# Creating a random name
+resource "random_string" "service_group" {
+  length  = 12
+  lower   = true
+  special = false
+  upper   = false
+}
+
+# This is the module call
+module "test" {
+  source = "../../"
+
+  name             = random_string.service_group.result
+  display_name     = random_string.service_group.result
+  enable_telemetry = var.enable_telemetry
+  role_assignments = {
+    "test-role" = {
+      principal_id               = data.azurerm_client_config.current.object_id
+      role_definition_id_or_name = "Contributor"
+    }
+  }
+  service_group_members = {
+    "test-resource-group-one" = {
+      name      = "test-resource-group-one"
+      target_id = azurerm_resource_group.one.id
+    }
+    "test-resource-group-two" = {
+      name      = "test-resource-group-two"
+      target_id = azurerm_resource_group.two.id
+    }
+  }
+}

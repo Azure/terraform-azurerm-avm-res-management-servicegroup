@@ -1,3 +1,3 @@
-# terraform-azurerm-avm-template
+# terraform-azurerm-avm-res-management-servicegroup
 
-This is a template repo for Terraform Azure Verified Modules.
+A terraform module for deploying a service group with members and additional role assignment on the service group.
