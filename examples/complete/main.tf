@@ -17,14 +17,14 @@ terraform {
   }
 }
 
-provider "azapi" {
-  # Configuration options
+variable "enable_telemetry" {
+  type    = bool
+  default = true
+  nullable = false
 }
-
 
 provider "azurerm" {
   features {}
-  # subscription_id = "your-subscription-id" # Replace with your Azure subscription ID
 }
 
 ## Section to provide a random Azure region for the resource group
@@ -71,14 +71,11 @@ resource "random_string" "service_group" {
   upper   = false
 }
 
-data "azurerm_client_config" "current" {}
-
 # This is the module call
 module "test" {
   source = "../../"
 
-  enable_telemetry        = true
-  parent_service_group_id = data.azurerm_client_config.current.tenant_id
+  enable_telemetry = var.enable_telemetry
   role_assignments = {
     "test-role" = {
       principal_id               = data.azurerm_client_config.current.object_id
@@ -87,12 +84,12 @@ module "test" {
   }
   service_group_members = {
     "test-resource-group-one" = {
-      targetId = azurerm_resource_group.one.id
+      target_id = azurerm_resource_group.one.id
     }
     "test-resource-group-two" = {
-      targetId = azurerm_resource_group.two.id
+      target_id = azurerm_resource_group.two.id
     }
   }
-  service_group_name = random_string.service_group.result
-  tenant_id          = data.azurerm_client_config.current.tenant_id
+  name = random_string.service_group.result
+  display_name = random_string.service_group.result
 }
