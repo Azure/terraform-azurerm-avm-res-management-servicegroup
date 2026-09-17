@@ -39,8 +39,9 @@ resource "random_string" "service_group" {
 module "test" {
   source = "../../"
 
-  name         = random_string.service_group.result
-  display_name = random_string.service_group.result
+  name             = random_string.service_group.result
+  display_name     = random_string.service_group.result
+  enable_telemetry = false
 }
 ```
 
