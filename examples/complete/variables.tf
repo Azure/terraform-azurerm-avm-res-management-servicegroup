@@ -1,5 +1,5 @@
 variable "enable_telemetry" {
   type     = bool
-  default  = false
+  default  = true
   nullable = false
 }

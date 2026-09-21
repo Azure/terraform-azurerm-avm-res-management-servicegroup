@@ -135,7 +135,7 @@ Description: n/a
 
 Type: `bool`
 
-Default: `false`
+Default: `true`
 
 ## Outputs
 
