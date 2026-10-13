@@ -12,6 +12,7 @@ resource "azapi_resource" "service_group" {
       }
     }
   }
+  tags = var.tags
 }
 
 module "service_group_members" {
