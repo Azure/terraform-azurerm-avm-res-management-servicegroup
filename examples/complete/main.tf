@@ -70,6 +70,7 @@ resource "random_string" "service_group" {
 module "test" {
   source = "../../"
 
+  location         = var.location
   name             = random_string.service_group.result
   display_name     = random_string.service_group.result
   enable_telemetry = var.enable_telemetry
