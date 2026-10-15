@@ -7,15 +7,14 @@ mock_provider "azapi" {
 
   mock_data "azapi_client_config" {
     defaults = {
-      tenant_id       = "00000000-0000-0000-0000-000000000001"
-      subscription_id = "00000000-0000-0000-0000-000000000002"
+      tenant_id                = "00000000-0000-0000-0000-000000000001"
+      subscription_id          = "00000000-0000-0000-0000-000000000002"
+      subscription_resource_id = "/subscriptions/00000000-0000-0000-0000-000000000002"
     }
   }
 }
 
 mock_provider "azurerm" {}
-mock_provider "modtm" {}
-mock_provider "random" {}
 
 variables {
   name             = "test-service-group"
@@ -28,8 +27,8 @@ run "default_tags" {
   providers = {
     azapi   = azapi
     azurerm = azurerm
-    modtm   = modtm
-    random  = random
+
+
   }
 
   assert {
@@ -41,6 +40,9 @@ run "default_tags" {
     condition     = azapi_resource.service_group.body.properties.parent.resourceId == "/providers/Microsoft.Management/serviceGroups/00000000-0000-0000-0000-000000000001"
     error_message = "The default parent must remain the tenant service group."
   }
+  variables {
+    location = "eastus"
+  }
 }
 
 run "custom_tags" {
@@ -49,8 +51,8 @@ run "custom_tags" {
   providers = {
     azapi   = azapi
     azurerm = azurerm
-    modtm   = modtm
-    random  = random
+
+
   }
 
   variables {
@@ -59,6 +61,7 @@ run "custom_tags" {
       owner       = "module-consumer"
     }
     parent_service_group_id = "parent-group"
+    location                = "eastus"
   }
 
   assert {

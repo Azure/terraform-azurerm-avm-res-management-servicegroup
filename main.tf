@@ -19,9 +19,11 @@ module "service_group_members" {
   source   = "./modules/members"
   for_each = var.service_group_members
 
+  location           = var.location
   name               = each.value.name
   parent_id          = each.value.target_id
   service_group_name = azapi_resource.service_group.name
+  enable_telemetry   = var.enable_telemetry
   tenant_id          = each.value.target_tenant_id
 }
 

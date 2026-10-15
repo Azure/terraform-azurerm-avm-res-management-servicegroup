@@ -1,3 +1,9 @@
+variable "location" {
+  type        = string
+  description = "The Azure region for this module's resources or telemetry deployment."
+  nullable    = false
+}
+
 variable "name" {
   type        = string
   description = "The name (ID) of the Service Group. This will form part of the resource ID."
