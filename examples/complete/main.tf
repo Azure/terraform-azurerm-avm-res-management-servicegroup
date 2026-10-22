@@ -2,6 +2,7 @@ terraform {
   required_version = "~> 1.5"
 
   required_providers {
+    # tflint-ignore: terraform_unused_required_providers
     azapi = {
       source  = "Azure/azapi"
       version = "~> 2.12"
@@ -28,9 +29,6 @@ data "azurerm_client_config" "current" {}
 module "regions" {
   source  = "Azure/avm-utl-regions/azurerm"
   version = "0.13.0"
-  providers = {
-    azapi = azapi
-  }
 
   location         = var.location
   enable_telemetry = var.enable_telemetry
