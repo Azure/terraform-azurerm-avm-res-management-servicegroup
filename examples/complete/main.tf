@@ -76,10 +76,10 @@ resource "random_string" "service_group" {
 module "test" {
   source = "../../"
 
-  location         = var.location
   name             = random_string.service_group.result
   display_name     = random_string.service_group.result
   enable_telemetry = var.enable_telemetry
+  location         = var.location
   role_assignments = {
     "test-role" = {
       principal_id               = data.azurerm_client_config.current.object_id
